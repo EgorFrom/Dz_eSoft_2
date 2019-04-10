@@ -21,18 +21,25 @@ function dummySegmentTree(array, fn, N) {
   			}
   	    newArray.splice(0,countColumnsOnLayer2);
   		}
-  		mainArrayLevel2 = [];
+      mainArrayLevel2 = [];
       countColumnsOnLayer2 = 1;
   		countColumnsOnLayer3 = 1;
   		flagSecondLayer = false;
   	}
 	  else if (numberDimension == 2)
 	  {	
-	  	for (var i = from; i < to; i++) 
-	  		for (var j = 0; j < newArray[i].length; j++)
-	  			mainArrayLevel2.push(newArray[i][j]);
+      if (!flagThirdLayer)
+        countColumnsOnLayer3 = newArray.length;
+      while (newArray.length >= countColumnsOnLayer3)
+      {
+  	  	for (var i = from; i < to; i++) 
+  	  		for (var j = 0; j < newArray[i].length; j++)
+  	  			mainArrayLevel2.push(newArray[i][j]);
+       countColumnsOnLayer2 = newArray[0].length;
+        newArray.splice(0,countColumnsOnLayer3);
+      }
+      mainArrayLevel3 = [];
 	  	flagSecondLayer = true;
-	  	countColumnsOnLayer2 = newArray[0].length;
   	  result = dummySegmentTree(mainArrayLevel2, fn, N);
 		}
 		else if (numberDimension == 3)
@@ -40,6 +47,7 @@ function dummySegmentTree(array, fn, N) {
 			for (var i = from; i < to; i++) 
         for (var j = 0; j < newArray[i].length; j++)
           mainArrayLevel3.push(newArray[i][j]);
+      flagThirdLayer = true;
       countColumnsOnLayer3 = newArray[0].length;
       result = dummySegmentTree(mainArrayLevel3, fn, N);
 		}
@@ -60,7 +68,9 @@ function segmentTree(array, fn, N) {
 var countColumnsOnLayer2 = 1;
 var countColumnsOnLayer3 = 1;
 var mainArrayLevel2 = [];
+var mainArrayLevel3 = [];
 var flagSecondLayer = false;
+var flagThirdLayer = false;
 function recursiveSegmentTree(array, fn, N) {
 	return segmentTree(array, fn, N);
 }
