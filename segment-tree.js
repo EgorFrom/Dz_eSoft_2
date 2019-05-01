@@ -155,8 +155,6 @@ function createAssignment(tree, elves, gems){
 }
 
 function assignEqually(tree, wishes, stash, elves, gems, week) {
-  var gemWish = [];
-  var arrayWishes = [];//array(номер камня,номер эльфа, желание(float))
   var middleNumber = 0;
   var oldTree = [];
 
@@ -185,32 +183,20 @@ function assignEqually(tree, wishes, stash, elves, gems, week) {
       }
     }
   }
-  for(let j = 0; j < wishes.length; j++)//wishes[j] - массив желаемых камней, j - номер эльфа
-    wishes[j].forEach(function(wish, numberGem){//желание(float), номер камня
-      arrayWishes.push([[numberGem],[j],[wish]]);
-    });
-  
 
   for (let i = 0; i < gems.length; i++)
   {
     while (stash[gems[i]] > 0)
     {
-      maxWish = -1;
       var indexMax = 0;
       middleNumber = getMiddleNumber(middleNumber, tree, gems.length, week, elves);
 
-        for(let p = 0; p < arrayWishes.length; p++){
-          if (maxWish < arrayWishes[p][2] & arrayWishes[p][0] == i)//проверка тот ли камень
-          {
-            if (getSumGemsByNumberElf(tree, getIndexElfByNumberFromArrayWishes(p, arrayWishes), week>0?week:1) < middleNumber)
-            {
-              maxWish = arrayWishes[p][2];
-              indexMax = p;
-            }
-          }
+      for(let j = 0; j < elves.length; j++)
+        if (getSumGemsByNumberElf(tree, j, week>0?week:1) < middleNumber)
+        {
+          tree[j][i][week>0?week-1:0] += 1;
+          break;
         }
-      tree[getIndexElfByNumberFromArrayWishes(indexMax, arrayWishes)][i][week>0?week-1:0] += 1;
-      //console.log(gems[i]+" передается эльфу "+ getNameElfByNumberFromArrayWishes(indexMax, elves, arrayWishes));
       stash[gems[i]]--;
     }
   }
@@ -222,14 +208,6 @@ function assignEqually(tree, wishes, stash, elves, gems, week) {
 
 
   return createAssignment(assig, elves, gems);
-  // let i = -1; 
-  // var wishGems = new Map();
-  // wishes.forEach(function(wish){
-  //   i++; 
-  //   wishGems.set(elves[i],wish);
-  // });
-  // return {
-  // };
 }
 
 function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
@@ -237,7 +215,6 @@ function assignAtLeastOne(tree, wishes, stash, elves, gems, week) {
 }
 
 function assignPreferredGems(tree, wishes, stash, elves, gems) {
-  //return assignEqually(tree, wishes, stash, elves, gems, tree[0][0].length);
   var week = tree[0][0].length;
   var gemWish = [];
   var arrayWishes = [];//array(номер камня,номер эльфа, желание(float))
@@ -290,7 +267,6 @@ function assignPreferredGems(tree, wishes, stash, elves, gems) {
           }
         }
       tree[getIndexElfByNumberFromArrayWishes(indexMax, arrayWishes)][i][week>0?week-1:0] += 1;
-      //console.log(gems[i]+" передается эльфу "+ getNameElfByNumberFromArrayWishes(indexMax, elves, arrayWishes));
       stash[gems[i]]--;
     }
   }
